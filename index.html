@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,7 +14,7 @@
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #012e01 0%, #135802 100%);
       min-height: 100vh;
       color: #333;
       line-height: 1.6;
@@ -35,7 +36,7 @@
       font-size: 2.5rem;
       font-weight: 300;
       margin-bottom: 10px;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     }
 
     .header p {
@@ -48,7 +49,7 @@
       border-radius: 20px;
       padding: 30px;
       margin-bottom: 30px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
       backdrop-filter: blur(10px);
     }
 
@@ -116,7 +117,7 @@
       background: white;
       border-radius: 20px;
       overflow: hidden;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
     }
 
     .status-bar {
@@ -143,8 +144,13 @@
     }
 
     @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
     }
 
     .table-container {
@@ -186,9 +192,20 @@
       text-transform: uppercase;
     }
 
-    .status-completed { background: #d4edda; color: #155724; }
-    .status-active { background: #d1ecf1; color: #0c5460; }
-    .status-cancelled { background: #f8d7da; color: #721c24; }
+    .status-completed {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .status-active {
+      background: #d1ecf1;
+      color: #0c5460;
+    }
+
+    .status-cancelled {
+      background: #f8d7da;
+      color: #721c24;
+    }
 
     .empty-state {
       text-align: center;
@@ -225,23 +242,26 @@
         grid-template-columns: 1fr;
         gap: 15px;
       }
-      
+
       .header h1 {
         font-size: 2rem;
       }
-      
-      .search-card, .results-card {
+
+      .search-card,
+      .results-card {
         margin: 0 -10px;
         border-radius: 15px;
       }
-      
-      th, td {
+
+      th,
+      td {
         padding: 12px 8px;
         font-size: 0.8rem;
       }
     }
   </style>
 </head>
+
 <body>
   <div class="container">
     <header class="header">
@@ -253,25 +273,14 @@
       <form class="search-form" onsubmit="return false;">
         <div class="input-group">
           <label for="airport">Aeroporto</label>
-          <input 
-            type="text" 
-            id="airport" 
-            placeholder="Ex: SBME, SBRF"
-            maxlength="4"
-            style="text-transform: uppercase;"
-          >
+          <input type="text" id="airport" placeholder="Ex: SBME, SBRF" maxlength="4" style="text-transform: uppercase;">
         </div>
-        
+
         <div class="input-group">
           <label for="aircraft">Aeronave</label>
-          <input 
-            type="text" 
-            id="aircraft" 
-            placeholder="Ex: OHA, PROHA"
-            style="text-transform: uppercase;"
-          >
+          <input type="text" id="aircraft" placeholder="Ex: OHA, PROHA" style="text-transform: uppercase;">
         </div>
-        
+
         <button type="button" class="search-btn" onclick="buscarVoos()">
           Buscar
         </button>
@@ -283,9 +292,9 @@
         <span class="results-count" id="resultsCount">0 voos encontrados</span>
         <div class="loading-spinner" id="loading" style="display: none;"></div>
       </div>
-      
+
       <div id="errorContainer"></div>
-      
+
       <div class="table-container">
         <table id="flightTable">
           <thead>
@@ -303,10 +312,11 @@
           <tbody id="flightData"></tbody>
         </table>
       </div>
-      
+
       <div class="empty-state" id="emptyState" style="display: none;">
         <svg viewBox="0 0 24 24" fill="currentColor">
-          <path d="M21,16V14L13,9V7A1,1 0 0,0 12,6A1,1 0 0,0 11,7V9L3,14V16L11,13.5V19L8,20.5V22L12,21L16,22V20.5L13,19V13.5L21,16Z" />
+          <path
+            d="M21,16V14L13,9V7A1,1 0 0,0 12,6A1,1 0 0,0 11,7V9L3,14V16L11,13.5V19L8,20.5V22L12,21L16,22V20.5L13,19V13.5L21,16Z" />
         </svg>
         <h3>Nenhum voo encontrado</h3>
         <p>Tente ajustar os filtros de busca</p>
@@ -320,8 +330,9 @@
 
   <script>
     // Configurações
-    const API_BASE = 'https://flightinfo.onrender.com/flights';
-    
+    // const API_BASE = 'https://flightinfo.onrender.com/flights';
+    const API_BASE = 'https://3000-dlombellopla-flightinfo-lszderjlpav.ws-us120.gitpod.io/flights';
+
     // Elementos DOM
     const elements = {
       airport: () => document.getElementById('airport'),
@@ -339,7 +350,7 @@
     async function buscarVoos() {
       const airport = elements.airport().value.trim().toUpperCase();
       const aircraft = elements.aircraft().value.trim().toUpperCase();
-      
+
       if (!airport && !aircraft) {
         mostrarErro('Informe pelo menos um filtro de busca');
         return;
@@ -347,7 +358,7 @@
 
       mostrarCarregando(true);
       limparResultados();
-      
+
       try {
         const dados = await buscarComTentativas(airport, aircraft);
         exibirResultados(dados);
@@ -362,7 +373,7 @@
     async function buscarComTentativas(airport, aircraft) {
       if (aircraft && aircraft.length === 3) {
         // Tenta com prefixos PR e PS
-        for (const prefix of ['PR', 'PS']) {
+        for (const prefix of ['PR', 'PS', 'PP']) {
           try {
             const dados = await fazerRequisicao(airport, prefix + aircraft);
             if (dados.length > 0) return dados;
@@ -370,7 +381,7 @@
             console.log(`Tentativa com ${prefix}${aircraft} falhou:`, error.message);
           }
         }
-        
+
         // Tenta sem prefixo
         try {
           return await fazerRequisicao(airport, aircraft);
@@ -378,7 +389,7 @@
           throw new Error(`Nenhum voo encontrado para ${aircraft} (tentativas: PR${aircraft}, PS${aircraft}, ${aircraft})`);
         }
       }
-      
+
       return await fazerRequisicao(airport, aircraft);
     }
 
@@ -387,46 +398,50 @@
       const params = new URLSearchParams();
       if (airport) params.append('airport', airport);
       if (aircraft) params.append('aircraft', aircraft);
-      
+
       const url = `${API_BASE}?${params.toString()}`;
       const response = await fetch(url);
-      
+
       if (!response.ok) {
         throw new Error(`Erro ${response.status}: ${response.statusText}`);
       }
-      
+
       const contentType = response.headers.get('content-type');
       if (!contentType?.includes('application/json')) {
         throw new Error('Resposta inválida do servidor');
       }
-      
+
       const data = await response.json();
-      
+
+      console.log(data)
+
       if (!Array.isArray(data.data)) {
         throw new Error('Formato de resposta inesperado');
       }
-      
+
       return data.data;
     }
 
     // Exibe os resultados na tabela
     function exibirResultados(dados) {
+      const airport = elements.airport().value.trim().toUpperCase();
+
       elements.results().style.display = 'block';
       elements.resultsCount().textContent = `${dados.length} voo${dados.length !== 1 ? 's' : ''} encontrado${dados.length !== 1 ? 's' : ''}`;
-      
+
       if (dados.length === 0) {
         elements.emptyState().style.display = 'block';
         return;
       }
-      
+
       elements.emptyState().style.display = 'none';
-      
+
       const tbody = elements.flightData();
       tbody.innerHTML = dados.map(voo => `
         <tr>
           <td>${voo.date || '-'}</td>
-          <td>${voo.aircraftType && voo.aircraftType.toLowerCase() !== 'unknown' ? voo.aircraftType : '-'}</td>
-          <td>${voo.origin || '-'}</td>
+          <td>${voo.aircraftId ? voo.aircraftId : voo.aircraftType.toLowerCase() !== 'unknown' ? voo.aircraftType : '-'}</td>
+          <td>${voo.origin || airport}</td>
           <td>${voo.destination || '-'}</td>
           <td>${voo.departure || '-'}</td>
           <td>${voo.arrival || '-'}</td>
@@ -475,16 +490,17 @@
           if (e.key === 'Enter') buscarVoos();
         });
       });
-      
+
       // Auto-uppercase nos inputs
       elements.airport().addEventListener('input', (e) => {
         e.target.value = e.target.value.toUpperCase();
       });
-      
+
       elements.aircraft().addEventListener('input', (e) => {
         e.target.value = e.target.value.toUpperCase();
       });
     });
   </script>
 </body>
+
 </html>
