@@ -273,7 +273,7 @@
       <form class="search-form" onsubmit="return false;">
         <div class="input-group">
           <label for="airport">Aeroporto</label>
-          <input type="text" id="airport" placeholder="Ex: SBME, SBRF" maxlength="4" style="text-transform: uppercase;">
+          <input type="text" id="airport" placeholder="Ex: SBME, SBFS" maxlength="4" style="text-transform: uppercase;">
         </div>
 
         <div class="input-group">
@@ -330,8 +330,8 @@
 
   <script>
     // Configurações
-    // const API_BASE = 'https://flightinfo.onrender.com/flights';
-    const API_BASE = 'https://3000-dlombellopla-flightinfo-lszderjlpav.ws-us120.gitpod.io/flights';
+    const API_BASE = 'https://flightinfo.onrender.com/flights';
+    // const API_BASE = 'https://3000-dlombellopla-flightinfo-lszderjlpav.ws-us120.gitpod.io/flights';
 
     // Elementos DOM
     const elements = {
@@ -425,6 +425,7 @@
     // Exibe os resultados na tabela
     function exibirResultados(dados) {
       const airport = elements.airport().value.trim().toUpperCase();
+      const aircraft = elements.aircraft().value.trim().toUpperCase();
 
       elements.results().style.display = 'block';
       elements.resultsCount().textContent = `${dados.length} voo${dados.length !== 1 ? 's' : ''} encontrado${dados.length !== 1 ? 's' : ''}`;
@@ -440,7 +441,7 @@
       tbody.innerHTML = dados.map(voo => `
         <tr>
           <td>${voo.date || '-'}</td>
-          <td>${voo.aircraftId ? voo.aircraftId : voo.aircraftType.toLowerCase() !== 'unknown' ? voo.aircraftType : '-'}</td>
+          <td>${voo.aircraftId ? voo.aircraftId : aircraft || '-'}</td>
           <td>${voo.origin || airport}</td>
           <td>${voo.destination || '-'}</td>
           <td>${voo.departure || '-'}</td>
