@@ -134,6 +134,11 @@
       color: #667eea;
     }
 
+    .last-update {
+      font-size: small;
+      color: #101011;
+    }
+
     .loading-spinner {
       width: 30px;
       height: 30px;
@@ -293,7 +298,7 @@
           <input type="text" id="aircraft" placeholder="Ex: PSCDU, PROHA" style="text-transform: uppercase;">
         </div>
 
-        <button type="button" class="search-btn" onclick="buscarVoos()">
+        <button type="button" class="search-btn" onclick="searchFlights()">
           Buscar
         </button>
       </form>
@@ -301,7 +306,8 @@
 
     <div class="results-card" id="results">
       <div class="status-bar">
-        <span class="results-count" id="resultsCount">0 voos encontrados</span>
+        <span class="results-count" id="resultsCount">0 voos encontrados </span>
+        <span class="last-update" id="lastUpdate"> </span>
         <div class="loading-spinner" id="loading" style="display: none;"></div>
       </div>
 
@@ -352,6 +358,7 @@
       results: () => document.getElementById('results'),
       loading: () => document.getElementById('loading'),
       resultsCount: () => document.getElementById('resultsCount'),
+      lastUpdate: () => document.getElementById('lastUpdate'),
       errorContainer: () => document.getElementById('errorContainer'),
       flightData: () => document.getElementById('flightData'),
       emptyState: () => document.getElementById('emptyState'),
@@ -372,7 +379,7 @@
         if (!aircraftCell) return;
 
         const aircraftCode = aircraftCell.textContent.trim()
-        const departureUTC = horaLocalParaUTC(row.cells[4].textContent.trim())
+        const departureUTC = localTimeToUTC(row.cells[4].textContent.trim())
         let date = formataAAAAMMDD(row.cells[0].textContent.trim())
         date = date ? date : getDataPorHorarioUTC(departureUTC)
 
@@ -383,7 +390,7 @@
       });
     });
 
-    function horaLocalParaUTC(horaStr) {
+    function localTimeToUTC(horaStr) {
       const match = horaStr.match(/^(\d{1,2}):(\d{2})\s*(-?\d{1,2})$/);
       if (!match) {
         console.error('Formato de hora inválido:', horaStr);
@@ -474,10 +481,10 @@
     }
 
     // Inicia o intervalo de atualização de 1 em 1 minuto (60000 ms)
-    setInterval(iniciaRotinaAtualizacao, 2 * 60 * 1000);
+    setInterval(startUpdateJob, 2 * 60 * 1000);
     let updateCounter = 0
 
-    function iniciaRotinaAtualizacao() {
+    function startUpdateJob() {
       const airport = elements.airport().value.trim().toUpperCase();
       let aircraft = elements.aircraft().value.trim().toUpperCase();
 
@@ -485,7 +492,7 @@
         return;
       }
 
-      if (updateCounter++ >= 30) {
+      if (updateCounter++ >= 15) {
         location.reload();
       }
 
@@ -493,60 +500,76 @@
       updateVoos();
     }
 
+    function getActualDateTime() {
+      const agora = new Date();
+
+      const dia = String(agora.getDate()).padStart(2, '0');
+      const mes = String(agora.getMonth() + 1).padStart(2, '0'); // mês começa em 0
+      const ano = agora.getFullYear();
+
+      const hora = String(agora.getHours()).padStart(2, '0');
+      const minuto = String(agora.getMinutes()).padStart(2, '0');
+
+      return `${dia}/${mes}/${ano} ${hora}:${minuto}`;
+    }
+
     async function updateVoos() {
       updateCounter++
+      elements.lastUpdate().textContent = "";
 
       const airport = elements.airport().value.trim().toUpperCase();
       let aircraft = elements.aircraft().value.trim().toUpperCase();
 
       if (!airport && !aircraft) {
-        mostrarErro('Informe pelo menos um filtro de busca');
+        showError('Informe pelo menos um filtro de busca');
         return;
       }
 
-      mostrarCarregando(true);
-      limparResultados();
+      showLoading(true);
+      clearResults();
 
       try {
-        const result = await buscarComTentativas(airport, aircraft);
+        const result = await findwithNoPrefix(airport, aircraft);
         const dados = result.dados
         aircraft = result.aircraft
-        exibirResultados({ airport, aircraft, dados });
+        showResults({ airport, aircraft, dados });
       } catch (error) {
-        mostrarErro(error.message);
+        showError(error.message);
       } finally {
-        mostrarCarregando(false);
+        showLoading(false);
       }
     }
 
     // Função principal de busca
-    async function buscarVoos() {
+    async function searchFlights() {
+      elements.lastUpdate().textContent = "";
+
       const airport = elements.airport().value.trim().toUpperCase();
       let aircraft = elements.aircraft().value.trim().toUpperCase();
 
       if (!airport && !aircraft) {
-        mostrarErro('Informe pelo menos um filtro de busca');
+        showError('Informe pelo menos um filtro de busca');
         return;
       }
 
       updateCounter = 0
-      mostrarCarregando(true);
-      limparResultados();
+      showLoading(true);
+      clearResults();
 
       try {
-        const result = await buscarComTentativas(airport, aircraft);
+        const result = await findwithNoPrefix(airport, aircraft);
         const dados = result.dados
         aircraft = result.aircraft
-        exibirResultados({ airport, aircraft, dados });
+        showResults({ airport, aircraft, dados });
       } catch (error) {
-        mostrarErro(error.message);
+        showError(error.message);
       } finally {
-        mostrarCarregando(false);
+        showLoading(false);
       }
     }
 
     // Busca com tentativas automáticas para códigos de 3 letras
-    async function buscarComTentativas(airport, aircraft) {
+    async function findwithNoPrefix(airport, aircraft) {
       aircraft = aircraft?.replace('-', '')
 
       if (aircraft && aircraft.length === 3) {
@@ -554,7 +577,7 @@
         for (const prefix of ['PR', 'PS', 'PP']) {
           let aircraftId = prefix + aircraft
           try {
-            const dados = await fazerRequisicao(airport, prefix + aircraft);
+            const dados = await makeApiRequest(airport, prefix + aircraft);
             if (dados.length > 0) {
               return { aircraft: aircraftId, dados }
             }
@@ -564,12 +587,12 @@
         }
       }
 
-      const dados = await fazerRequisicao(airport, aircraft);
+      const dados = await makeApiRequest(airport, aircraft);
       return { aircraft, dados }
     }
 
     // Faz a requisição para a API
-    async function fazerRequisicao(airport, aircraft) {
+    async function makeApiRequest(airport, aircraft) {
       const params = new URLSearchParams();
       if (airport) params.append('airport', airport);
       if (aircraft) params.append('aircraft', aircraft);
@@ -596,12 +619,13 @@
     }
 
     // Exibe os resultados na tabela
-    function exibirResultados(objeto) {
+    function showResults(objeto) {
       const dados = objeto.dados
       const airport = objeto.airport
       const aircraft = objeto.aircraft
 
       elements.resultsCount().textContent = `${dados.length} voo${dados.length !== 1 ? 's' : ''} encontrado${dados.length !== 1 ? 's' : ''}`;
+      elements.lastUpdate().textContent = `Atualizado em: ${getActualDateTime()}`
 
       if (dados.length === 0) {
         elements.emptyState().style.display = 'block';
@@ -626,13 +650,13 @@
     }
 
     // Mostra/esconde indicador de carregamento
-    function mostrarCarregando(show) {
+    function showLoading(show) {
       elements.loading().style.display = show ? 'block' : 'none';
       elements.searchBtn().disabled = show;
     }
 
     // Mostra mensagem de erro
-    function mostrarErro(mensagem) {
+    function showError(mensagem) {
       const container = elements.errorContainer();
       container.innerHTML = `<div class="error-message">${mensagem}</div>`;
       elements.results().style.display = 'block';
@@ -640,7 +664,7 @@
     }
 
     // Limpa os resultados
-    function limparResultados() {
+    function clearResults() {
       elements.errorContainer().innerHTML = '';
       elements.flightData().innerHTML = '';
       elements.emptyState().style.display = 'none';
@@ -651,7 +675,7 @@
       // Enter nos campos de input
       [elements.airport(), elements.aircraft()].forEach(input => {
         input.addEventListener('keypress', (e) => {
-          if (e.key === 'Enter') buscarVoos();
+          if (e.key === 'Enter') searchFlights();
         });
       });
 
