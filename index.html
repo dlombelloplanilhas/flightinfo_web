@@ -282,7 +282,7 @@
 <body>
   <div class="container">
     <header class="header">
-      <h1>✈️ FlightInfo BR</h1>
+      <h1>🚁 FlightInfo BR</h1>
       <p>Consulta de voos offshore em tempo real</p>
     </header>
 
@@ -492,7 +492,7 @@
         return;
       }
 
-      if (updateCounter++ >= 15) {
+      if (updateCounter++ >= 10) {
         location.reload();
       }
 
@@ -504,7 +504,7 @@
       const agora = new Date();
 
       const dia = String(agora.getDate()).padStart(2, '0');
-      const mes = String(agora.getMonth() + 1).padStart(2, '0'); // mês começa em 0
+      const mes = String(agora.getMonth() + 1).padStart(2, '0');
       const ano = agora.getFullYear();
 
       const hora = String(agora.getHours()).padStart(2, '0');
@@ -635,18 +635,27 @@
       elements.emptyState().style.display = 'none';
 
       const tbody = elements.flightData();
-      tbody.innerHTML = dados.map(voo => `
+
+      const table = [];
+      dados.forEach(voo => {
+        const aircraftId = voo.aircraftId ? voo.aircraftId : aircraft || '-';
+        const icon = aircraftId.length === 5 ? '🚁' : '✈️';
+        table.push(
+          `
         <tr class="flight-row" title="Clique para abrir o rastreamento">
           <td>${voo.date || '-'}</td>
-          <td>${voo.aircraftId ? voo.aircraftId : aircraft || '-'}</td>
+          <td>${aircraftId}</td>
           <td>${voo.origin || airport}</td>
           <td>${voo.destination || '-'}</td>
           <td>${voo.departure || '-'}</td>
           <td>${voo.arrival || '-'}</td>
           <td>${voo.duration || '-'}</td>
-          <td>✈️</td>
+          <td>${icon}</td>
         </tr>
-      `).join('');
+      `
+        );
+      });
+      tbody.innerHTML = table.join('');
     }
 
     // Mostra/esconde indicador de carregamento
