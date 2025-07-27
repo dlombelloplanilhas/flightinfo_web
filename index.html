@@ -369,7 +369,7 @@
         const aircraftCell = row.cells[1]; // segunda coluna (índice 1) = Aeronave
         if (!aircraftCell) return;
 
-        const aircraftCode = aircraftCell.textContent.trim();
+        const aircraftCode = aircraftCell.textContent.trim()
         const departureUTC = horaLocalParaUTC(row.cells[4].textContent.trim())
         let date = formataAAAAMMDD(row.cells[0].textContent.trim())
         date = date ? date : getDataPorHorarioUTC(departureUTC)
@@ -499,6 +499,7 @@
 
     // Busca com tentativas automáticas para códigos de 3 letras
     async function buscarComTentativas(airport, aircraft) {
+      aircraft = aircraft?.replace('-', '')
 
       if (aircraft && aircraft.length === 3) {
         // Tenta com prefixos PR e PS
@@ -538,8 +539,6 @@
       }
 
       const data = await response.json();
-
-      console.log(data)
 
       if (!Array.isArray(data.data)) {
         throw new Error('Formato de resposta inesperado');
