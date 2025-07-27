@@ -298,7 +298,7 @@
           <input type="text" id="aircraft" placeholder="Ex: PSCDU, PROHA" style="text-transform: uppercase;">
         </div>
 
-        <button type="button" class="search-btn" onclick="searchFlights()">
+        <button type="button" class="search-btn" onclick="searchFlightsButton()">
           Buscar
         </button>
       </form>
@@ -529,7 +529,7 @@
       clearResults();
 
       try {
-        const result = await findwithNoPrefix(airport, aircraft);
+        const result = await noPrefixSearch(airport, aircraft);
         const dados = result.dados
         aircraft = result.aircraft
         showResults({ airport, aircraft, dados });
@@ -541,11 +541,13 @@
     }
 
     // Função principal de busca
-    async function searchFlights() {
+    async function searchFlightsButton() {
       elements.lastUpdate().textContent = "";
 
       const airport = elements.airport().value.trim().toUpperCase();
       let aircraft = elements.aircraft().value.trim().toUpperCase();
+
+      clearResults();
 
       if (!airport && !aircraft) {
         showError('Informe pelo menos um filtro de busca');
@@ -554,10 +556,9 @@
 
       updateCounter = 0
       showLoading(true);
-      clearResults();
 
       try {
-        const result = await findwithNoPrefix(airport, aircraft);
+        const result = await noPrefixSearch(airport, aircraft);
         const dados = result.dados
         aircraft = result.aircraft
         showResults({ airport, aircraft, dados });
@@ -569,7 +570,7 @@
     }
 
     // Busca com tentativas automáticas para códigos de 3 letras
-    async function findwithNoPrefix(airport, aircraft) {
+    async function noPrefixSearch(airport, aircraft) {
       aircraft = aircraft?.replace('-', '')
 
       if (aircraft && aircraft.length === 3) {
@@ -676,6 +677,7 @@
     function clearResults() {
       elements.errorContainer().innerHTML = '';
       elements.flightData().innerHTML = '';
+      elements.resultsCount().textContent = '';
       elements.emptyState().style.display = 'none';
     }
 
@@ -684,7 +686,7 @@
       // Enter nos campos de input
       [elements.airport(), elements.aircraft()].forEach(input => {
         input.addEventListener('keypress', (e) => {
-          if (e.key === 'Enter') searchFlights();
+          if (e.key === 'Enter') searchFlightsButton();
         });
       });
 
