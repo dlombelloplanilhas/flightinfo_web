@@ -143,6 +143,16 @@
       animation: spin 1s linear infinite;
     }
 
+    .flight-row {
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    .flight-row:hover {
+      background-color: #f0f8ff;
+      /* azul claro */
+    }
+
     @keyframes spin {
       0% {
         transform: rotate(0deg);
@@ -278,7 +288,7 @@
 
         <div class="input-group">
           <label for="aircraft">Aeronave</label>
-          <input type="text" id="aircraft" placeholder="Ex: OHA, PROHA" style="text-transform: uppercase;">
+          <input type="text" id="aircraft" placeholder="Ex: PSCDU, PROHA" style="text-transform: uppercase;">
         </div>
 
         <button type="button" class="search-btn" onclick="buscarVoos()">
@@ -306,7 +316,7 @@
               <th>Partida</th>
               <th>Chegada</th>
               <th>Duração</th>
-              <th>Status</th>
+              <th>Track</th>
             </tr>
           </thead>
           <tbody id="flightData"></tbody>
@@ -346,10 +356,126 @@
       searchBtn: () => document.querySelector('.search-btn')
     };
 
+    // Adiciona o evento de clique em cada linha da tabela
+    document.addEventListener('DOMContentLoaded', function () {
+      const flightTable = document.getElementById('flightTable');
+
+      flightTable.addEventListener('click', function (event) {
+        const row = event.target.closest('tr');
+
+        // Ignora o clique no cabeçalho
+        if (!row || row.parentNode.tagName !== 'TBODY') return;
+
+        const aircraftCell = row.cells[1]; // segunda coluna (índice 1) = Aeronave
+        if (!aircraftCell) return;
+
+        const aircraftCode = aircraftCell.textContent.trim();
+        const departureUTC = horaLocalParaUTC(row.cells[4].textContent.trim())
+        let date = formataAAAAMMDD(row.cells[0].textContent.trim())
+        date = date ? date : getDataPorHorarioUTC(departureUTC)
+
+        if (aircraftCode) {
+          const url = `https://pt.flightaware.com/live/flight/${aircraftCode}/history/${date}/${departureUTC}`;
+          window.open(url, '_blank');
+        }
+      });
+    });
+
+    function horaLocalParaUTC(horaStr) {
+      const match = horaStr.match(/^(\d{1,2}):(\d{2})\s*(-?\d{1,2})$/);
+      if (!match) {
+        console.error('Formato de hora inválido:', horaStr);
+        return null;
+      }
+
+      let [_, hora, minuto, offset] = match;
+      hora = parseInt(hora);
+      minuto = parseInt(minuto);
+      offset = parseInt(offset);
+
+      // Converte para UTC
+      let horaUTC = hora + offset * -1;
+
+      // Ajuste se passar de 24h ou for negativo
+      if (horaUTC >= 24) horaUTC -= 24;
+      if (horaUTC < 0) horaUTC += 24;
+
+      return `${horaUTC.toString().padStart(2, '0')}${minuto.toString().padStart(2, '0')}Z`;
+    }
+
+    function formataAAAAMMDD(dataStr) {
+      const meses = {
+        // Inglês
+        jan: '01', feb: '02', mar: '03', apr: '04', may: '05', jun: '06',
+        jul: '07', aug: '08', sep: '09', oct: '10', nov: '11', dec: '12',
+        // Português
+        jan: '01', fev: '02', mar: '03', abr: '04', mai: '05', jun: '06',
+        jul: '07', ago: '08', set: '09', out: '10', nov: '11', dez: '12'
+      };
+
+      const regex = /^(\d{1,2})[-\/\s]([a-zA-Z]{3})[-\/\s](\d{4})$/;
+
+      const match = dataStr.trim().match(regex);
+      if (!match) {
+        console.error('Formato de data inválido:', dataStr);
+        return null;
+      }
+
+      let [_, dia, mesAbrev, ano] = match;
+      dia = dia.padStart(2, '0');
+      const mesNum = meses[mesAbrev.toLowerCase()];
+
+      if (!mesNum) {
+        console.error('Mês não reconhecido:', mesAbrev);
+        return null;
+      }
+
+      return `${ano}${mesNum}${dia}`;
+    }
+
+    function getDataPorHorarioUTC(departureUTC) {
+      const match = departureUTC.match(/^(\d{2})(\d{2})Z$/);
+      if (!match) {
+        console.error("Formato inválido:", departureUTC);
+        return null;
+      }
+
+      const [_, horaStr, minutoStr] = match;
+      const hora = parseInt(horaStr, 10);
+      const minuto = parseInt(minutoStr, 10);
+
+      // Hora de agora em UTC
+      const agoraUTC = new Date();
+      const totalAgoraMinutos = agoraUTC.getUTCHours() * 60 + agoraUTC.getUTCMinutes();
+
+      // Horário de partida em minutos
+      const totalDepartureMinutos = hora * 60 + minuto;
+
+      // Define data-base: hoje ou ontem
+      let dataUTC = new Date(Date.UTC(
+        agoraUTC.getUTCFullYear(),
+        agoraUTC.getUTCMonth(),
+        agoraUTC.getUTCDate()
+      ));
+
+      if (totalDepartureMinutos > totalAgoraMinutos) {
+        // Se ainda vai acontecer → é da data anterior
+        dataUTC.setUTCDate(dataUTC.getUTCDate() - 1);
+      }
+
+      // Retorna no formato YYYYMMDD
+      const ano = dataUTC.getUTCFullYear();
+      const mes = String(dataUTC.getUTCMonth() + 1).padStart(2, '0');
+      const dia = String(dataUTC.getUTCDate()).padStart(2, '0');
+
+      return `${ano}${mes}${dia}`;
+    }
+
+
     // Função principal de busca
     async function buscarVoos() {
       const airport = elements.airport().value.trim().toUpperCase();
-      const aircraft = elements.aircraft().value.trim().toUpperCase();
+      let aircraft = elements.aircraft().value.trim().toUpperCase();
 
       if (!airport && !aircraft) {
         mostrarErro('Informe pelo menos um filtro de busca');
@@ -360,8 +486,10 @@
       limparResultados();
 
       try {
-        const dados = await buscarComTentativas(airport, aircraft);
-        exibirResultados(dados);
+        const result = await buscarComTentativas(airport, aircraft);
+        const dados = result.dados
+        aircraft = result.aircraft
+        exibirResultados({ airport, aircraft, dados });
       } catch (error) {
         mostrarErro(error.message);
       } finally {
@@ -371,26 +499,24 @@
 
     // Busca com tentativas automáticas para códigos de 3 letras
     async function buscarComTentativas(airport, aircraft) {
+
       if (aircraft && aircraft.length === 3) {
         // Tenta com prefixos PR e PS
         for (const prefix of ['PR', 'PS', 'PP']) {
+          let aircraftId = prefix + aircraft
           try {
             const dados = await fazerRequisicao(airport, prefix + aircraft);
-            if (dados.length > 0) return dados;
+            if (dados.length > 0) {
+              return { aircraft: aircraftId, dados }
+            }
           } catch (error) {
             console.log(`Tentativa com ${prefix}${aircraft} falhou:`, error.message);
           }
         }
-
-        // Tenta sem prefixo
-        try {
-          return await fazerRequisicao(airport, aircraft);
-        } catch (error) {
-          throw new Error(`Nenhum voo encontrado para ${aircraft} (tentativas: PR${aircraft}, PS${aircraft}, ${aircraft})`);
-        }
       }
 
-      return await fazerRequisicao(airport, aircraft);
+      const dados = await fazerRequisicao(airport, aircraft);
+      return { aircraft, dados }
     }
 
     // Faz a requisição para a API
@@ -423,9 +549,12 @@
     }
 
     // Exibe os resultados na tabela
-    function exibirResultados(dados) {
-      const airport = elements.airport().value.trim().toUpperCase();
-      const aircraft = elements.aircraft().value.trim().toUpperCase();
+    function exibirResultados(objeto) {
+      const dados = objeto.dados
+      const airport = objeto.airport
+      const aircraft = objeto.aircraft
+
+      console.log(objeto)
 
       elements.results().style.display = 'block';
       elements.resultsCount().textContent = `${dados.length} voo${dados.length !== 1 ? 's' : ''} encontrado${dados.length !== 1 ? 's' : ''}`;
@@ -439,7 +568,7 @@
 
       const tbody = elements.flightData();
       tbody.innerHTML = dados.map(voo => `
-        <tr>
+        <tr class="flight-row" title="Clique para abrir o rastreamento">
           <td>${voo.date || '-'}</td>
           <td>${voo.aircraftId ? voo.aircraftId : aircraft || '-'}</td>
           <td>${voo.origin || airport}</td>
@@ -447,19 +576,9 @@
           <td>${voo.departure || '-'}</td>
           <td>${voo.arrival || '-'}</td>
           <td>${voo.duration || '-'}</td>
-          <td><span class="status-badge ${getStatusClass(voo.status)}">${voo.status || '-'}</span></td>
+          <td>✈️</td>
         </tr>
       `).join('');
-    }
-
-    // Retorna a classe CSS para o status
-    function getStatusClass(status) {
-      if (!status) return '';
-      const s = status.toLowerCase();
-      if (s.includes('completed') || s.includes('arrived')) return 'status-completed';
-      if (s.includes('active') || s.includes('en route')) return 'status-active';
-      if (s.includes('cancelled') || s.includes('canceled')) return 'status-cancelled';
-      return '';
     }
 
     // Mostra/esconde indicador de carregamento
