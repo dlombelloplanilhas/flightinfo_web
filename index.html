@@ -209,6 +209,10 @@
             font-size: 0.9rem;
         }
 
+        .flight-local {
+            font-size: small;
+        }
+
         .flight-row {
             cursor: pointer;
             transition: all 0.2s ease;
@@ -805,8 +809,8 @@
               </span>
             </td>
             <td><strong>${aircraftId.length === 5 ? formatarTextoPrefixo(aircraftId) : aircraftId}</strong></td>
-            <td>${voo.origin || airport}</td>
-            <td>${voo.destination || '-'}</td>
+            <td class="flight-local">${voo.origin || airport}</td>
+            <td class="flight-local">${voo.destination || '-'}</td>
             <td>${voo.departure || '-'}</td>
             <td>${voo.arrival || '-'}</td>
             <td>${voo.duration || '-'}</td>
