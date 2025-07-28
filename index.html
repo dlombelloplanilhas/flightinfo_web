@@ -2,617 +2,709 @@
 <html lang="pt-BR">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FlightInfo BR - Voos Offshore</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlightInfo BR - Voos Offshore</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: linear-gradient(135deg, #012e01 0%, #135802 100%);
-      min-height: 100vh;
-      color: #333;
-      line-height: 1.6;
-    }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #012e01 0%, #135802 100%);
+            min-height: 100vh;
+            color: #333;
+            line-height: 1.6;
+        }
 
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 20px;
-    }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
 
-    .header {
-      text-align: center;
-      margin-bottom: 40px;
-      color: white;
-    }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
 
-    .header h1 {
-      font-size: 2.5rem;
-      font-weight: 300;
-      margin-bottom: 10px;
-      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-    }
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 300;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
 
-    .header p {
-      font-size: 1.1rem;
-      opacity: 0.9;
-    }
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
 
-    .search-card {
-      background: white;
-      border-radius: 20px;
-      padding: 30px;
-      margin-bottom: 30px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-      backdrop-filter: blur(10px);
-    }
+        .search-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
 
-    .search-form {
-      display: grid;
-      grid-template-columns: 1fr 1fr auto;
-      gap: 20px;
-      align-items: end;
-    }
+        .search-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr auto;
+            gap: 20px;
+            align-items: end;
+        }
 
-    .input-group {
-      position: relative;
-    }
+        .input-group {
+            position: relative;
+        }
 
-    .input-group label {
-      display: block;
-      margin-bottom: 8px;
-      font-weight: 500;
-      color: #555;
-      font-size: 0.9rem;
-    }
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #555;
+            font-size: 0.9rem;
+        }
 
-    .input-group input {
-      width: 100%;
-      padding: 15px 20px;
-      border: 2px solid #e1e5e9;
-      border-radius: 12px;
-      font-size: 1rem;
-      transition: all 0.3s ease;
-      background: #f8f9fa;
-    }
+        .input-group input,
+        .input-group select {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
 
-    .input-group input:focus {
-      outline: none;
-      border-color: #667eea;
-      background: white;
-      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-    }
+        .input-group input:focus,
+        .input-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
 
-    .search-btn {
-      padding: 15px 30px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      border: none;
-      border-radius: 12px;
-      font-size: 1rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      min-width: 120px;
-    }
+        .input-group select {
+            cursor: pointer;
+        }
 
-    .search-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
-    }
+        .search-btn {
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 120px;
+        }
 
-    .search-btn:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-      transform: none;
-    }
+        .search-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
 
-    .results-card {
-      background: white;
-      border-radius: 20px;
-      overflow: hidden;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-    }
+        .search-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
 
-    .status-bar {
-      padding: 20px 30px;
-      background: #f8f9fa;
-      border-bottom: 1px solid #e1e5e9;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+        .results-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
 
-    .results-count {
-      font-weight: 500;
-      color: #667eea;
-    }
+        .status-bar {
+            padding: 20px 30px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e1e5e9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
 
-    .last-update {
-      font-size: small;
-      color: #101011;
-    }
+        .results-count {
+            font-weight: 500;
+            color: #667eea;
+        }
 
-    .loading-spinner {
-      width: 30px;
-      height: 30px;
-      border: 4px solid #e1e5e9;
-      border-top: 4px solid #667eea;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      background-color: white;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    }
+        .status-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
 
-    .flight-row {
-      cursor: pointer;
-      transition: background-color 0.2s ease;
-    }
+        .last-update {
+            font-size: small;
+            color: #101011;
+        }
 
-    .flight-row:hover {
-      background-color: #f0f8ff;
-      /* azul claro */
-    }
+        .filter-info {
+            font-size: small;
+            color: #666;
+            background: #e9ecef;
+            padding: 4px 8px;
+            border-radius: 8px;
+        }
 
-    @keyframes spin {
-      0% {
-        transform: rotate(0deg);
-      }
+        .loading-spinner {
+            width: 30px;
+            height: 30px;
+            border: 4px solid #e1e5e9;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            background-color: white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
 
-      100% {
-        transform: rotate(360deg);
-      }
-    }
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
 
-    .table-container {
-      overflow-x: auto;
-      max-height: 600px;
-    }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
+        .table-container {
+            overflow-x: auto;
+            max-height: 600px;
+        }
 
-    th {
-      background: #667eea;
-      color: white;
-      padding: 20px 15px;
-      text-align: left;
-      font-weight: 500;
-      position: sticky;
-      top: 0;
-      z-index: 10;
-    }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
 
-    td {
-      padding: 15px;
-      border-bottom: 1px solid #e1e5e9;
-      font-size: 0.9rem;
-    }
+        th {
+            background: #667eea;
+            color: white;
+            padding: 20px 15px;
+            text-align: left;
+            font-weight: 500;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
 
-    tr:hover {
-      background: #f8f9fa;
-    }
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e1e5e9;
+            font-size: 0.9rem;
+        }
 
-    .status-badge {
-      padding: 4px 12px;
-      border-radius: 20px;
-      font-size: 0.8rem;
-      font-weight: 500;
-      text-transform: uppercase;
-    }
+        .flight-row {
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
 
-    .status-completed {
-      background: #d4edda;
-      color: #155724;
-    }
+        .flight-row:hover {
+            background: #f0f8ff;
+            transform: translateX(2px);
+        }
 
-    .status-active {
-      background: #d1ecf1;
-      color: #0c5460;
-    }
+        .aircraft-type {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
 
-    .status-cancelled {
-      background: #f8d7da;
-      color: #721c24;
-    }
+        .aircraft-type.helicopter {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
 
-    .empty-state {
-      text-align: center;
-      padding: 60px 20px;
-      color: #6c757d;
-    }
+        .aircraft-type.airplane {
+            background: #f3e5f5;
+            color: #7b1fa2;
+        }
 
-    .empty-state svg {
-      width: 64px;
-      height: 64px;
-      margin-bottom: 20px;
-      opacity: 0.5;
-    }
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6c757d;
+        }
 
-    .error-message {
-      background: #f8d7da;
-      color: #721c24;
-      padding: 15px 20px;
-      border-radius: 10px;
-      margin: 20px 30px;
-      border: 1px solid #f5c6cb;
-    }
+        .empty-state svg {
+            width: 64px;
+            height: 64px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
 
-    .footer {
-      text-align: center;
-      margin-top: 40px;
-      color: white;
-      opacity: 0.8;
-      font-size: 0.9rem;
-    }
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin: 20px 30px;
+            border: 1px solid #f5c6cb;
+        }
 
-    @media (max-width: 768px) {
-      .search-form {
-        grid-template-columns: 1fr;
-        gap: 15px;
-      }
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            color: white;
+            opacity: 0.8;
+            font-size: 0.9rem;
+        }
 
-      .header h1 {
-        font-size: 2rem;
-      }
+        @media (max-width: 768px) {
+            .search-form {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
 
-      .search-card,
-      .results-card {
-        margin: 0 -10px;
-        border-radius: 15px;
-      }
+            .header h1 {
+                font-size: 2rem;
+            }
 
-      th,
-      td {
-        padding: 12px 8px;
-        font-size: 0.8rem;
-      }
-    }
-  </style>
+            .search-card,
+            .results-card {
+                margin: 0 -10px;
+                border-radius: 15px;
+            }
+
+            .status-bar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            th,
+            td {
+                padding: 12px 8px;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
 </head>
 
 <body>
-  <div class="container">
-    <header class="header">
-      <h1>🚁 FlightInfo BR</h1>
-      <p>Consulta de voos offshore em tempo real</p>
-    </header>
+    <div class="container">
+        <header class="header">
+            <h1>🚁 FlightInfo BR</h1>
+            <p>Consulta de voos offshore em tempo real</p>
+        </header>
 
-    <div class="search-card">
-      <form class="search-form" onsubmit="return false;">
-        <div class="input-group">
-          <label for="airport">Aeroporto</label>
-          <input type="text" id="airport" placeholder="Ex: SBME, SBFS" style="text-transform: uppercase;">
+        <div class="search-card">
+            <form class="search-form" onsubmit="return false;">
+                <div class="input-group">
+                    <label for="airport">Aeroporto</label>
+                    <input type="text" id="airport" placeholder="Ex: SBME, SBFS" style="text-transform: uppercase;">
+                </div>
+
+                <div class="input-group">
+                    <label for="aircraft">Aeronave</label>
+                    <input type="text" id="aircraft" placeholder="Ex: PSCDU, PROHA" style="text-transform: uppercase;">
+                </div>
+
+                <div class="input-group">
+                    <label for="aircraftType">Tipo de Aeronave</label>
+                    <select id="aircraftType">
+                        <option value="all">Todos</option>
+                        <option value="helicopter">🚁 Helicópteros</option>
+                        <option value="airplane">✈️ Aviões</option>
+                    </select>
+                </div>
+
+                <button type="button" class="search-btn" onclick="searchFlightsButton()">
+                    Buscar
+                </button>
+            </form>
         </div>
 
-        <div class="input-group">
-          <label for="aircraft">Aeronave</label>
-          <input type="text" id="aircraft" placeholder="Ex: PSCDU, PROHA" style="text-transform: uppercase;">
+        <div class="results-card" id="results">
+            <div class="status-bar">
+                <span class="results-count" id="resultsCount">0 voos encontrados</span>
+                <div class="status-info">
+                    <span class="filter-info" id="filterInfo" style="display: none;"></span>
+                    <span class="last-update" id="lastUpdate"></span>
+                    <div class="loading-spinner" id="loading" style="display: none;"></div>
+                </div>
+            </div>
+
+            <div id="errorContainer"></div>
+
+            <div class="table-container">
+                <table id="flightTable">
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Tipo</th>
+                            <th>Aeronave</th>
+                            <th>Origem</th>
+                            <th>Destino</th>
+                            <th>Decolagem</th>
+                            <th>Pouso</th>
+                            <th>Duração</th>
+                            <th>Track</th>
+                        </tr>
+                    </thead>
+                    <tbody id="flightData"></tbody>
+                </table>
+            </div>
+
+            <div class="empty-state" id="emptyState" style="display: none;">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path
+                        d="M21,16V14L13,9V7A1,1 0 0,0 12,6A1,1 0 0,0 11,7V9L3,14V16L11,13.5V19L8,20.5V22L12,21L16,22V20.5L13,19V13.5L21,16Z" />
+                </svg>
+                <h3>Nenhum voo encontrado</h3>
+                <p>Tente ajustar os filtros de busca</p>
+            </div>
         </div>
 
-        <button type="button" class="search-btn" onclick="searchFlightsButton()">
-          Buscar
-        </button>
-      </form>
+        <footer class="footer">
+            <p>&copy; 2025 FlightInfo BR - Dados via FlightAware API</p>
+        </footer>
     </div>
 
-    <div class="results-card" id="results">
-      <div class="status-bar">
-        <span class="results-count" id="resultsCount">0 voos encontrados </span>
-        <span class="last-update" id="lastUpdate"> </span>
-        <div class="loading-spinner" id="loading" style="display: none;"></div>
-      </div>
+    <script>
+        // Configurações
+        const API_BASE = 'https://flightinfo.onrender.com/flights';
+        // const API_BASE = 'https://3000-dlombellopla-flightinfo-lszderjlpav.ws-us120.gitpod.io/flights';
 
-      <div id="errorContainer"></div>
+        // Cache para dados originais
+        let originalFlightData = [];
+        let filteredFlightData = [];
 
-      <div class="table-container">
-        <table id="flightTable">
-          <thead>
-            <tr>
-              <th>Data</th>
-              <th>Aeronave</th>
-              <th>Origem</th>
-              <th>Destino</th>
-              <th>Partida</th>
-              <th>Chegada</th>
-              <th>Duração</th>
-              <th>Track</th>
-            </tr>
-          </thead>
-          <tbody id="flightData"></tbody>
-        </table>
-      </div>
+        // Elementos DOM
+        const elements = {
+            airport: () => document.getElementById('airport'),
+            aircraft: () => document.getElementById('aircraft'),
+            aircraftType: () => document.getElementById('aircraftType'),
+            results: () => document.getElementById('results'),
+            loading: () => document.getElementById('loading'),
+            resultsCount: () => document.getElementById('resultsCount'),
+            lastUpdate: () => document.getElementById('lastUpdate'),
+            filterInfo: () => document.getElementById('filterInfo'),
+            errorContainer: () => document.getElementById('errorContainer'),
+            flightData: () => document.getElementById('flightData'),
+            emptyState: () => document.getElementById('emptyState'),
+            searchBtn: () => document.querySelector('.search-btn')
+        };
 
-      <div class="empty-state" id="emptyState" style="display: none;">
-        <svg viewBox="0 0 24 24" fill="currentColor">
-          <path
-            d="M21,16V14L13,9V7A1,1 0 0,0 12,6A1,1 0 0,0 11,7V9L3,14V16L11,13.5V19L8,20.5V22L12,21L16,22V20.5L13,19V13.5L21,16Z" />
-        </svg>
-        <h3>Nenhum voo encontrado</h3>
-        <p>Tente ajustar os filtros de busca</p>
-      </div>
-    </div>
+        // Inicia o intervalo de atualização de 3 em 3 minutos
+        setInterval(startUpdateJob, 3 * 60 * 1000);
+        let updateCounter = 0;
+        elements.airport().value = '';
+        elements.aircraft().value = '';
 
-    <footer class="footer">
-      <p>&copy; 2025 FlightInfo BR - Dados via FlightAware API</p>
-    </footer>
-  </div>
+        // Adiciona o evento de clique em cada linha da tabela
+        document.addEventListener('DOMContentLoaded', function () {
+            const flightTable = document.getElementById('flightTable');
 
-  <script>
-    // Configurações
-    const API_BASE = 'https://flightinfo.onrender.com/flights';
-    // const API_BASE = 'https://3000-dlombellopla-flightinfo-lszderjlpav.ws-us120.gitpod.io/flights';
+            flightTable.addEventListener('click', function (event) {
+                const row = event.target.closest('tr');
 
-    // Elementos DOM
-    const elements = {
-      airport: () => document.getElementById('airport'),
-      aircraft: () => document.getElementById('aircraft'),
-      results: () => document.getElementById('results'),
-      loading: () => document.getElementById('loading'),
-      resultsCount: () => document.getElementById('resultsCount'),
-      lastUpdate: () => document.getElementById('lastUpdate'),
-      errorContainer: () => document.getElementById('errorContainer'),
-      flightData: () => document.getElementById('flightData'),
-      emptyState: () => document.getElementById('emptyState'),
-      searchBtn: () => document.querySelector('.search-btn')
-    };
+                // Ignora o clique no cabeçalho
+                if (!row || row.parentNode.tagName !== 'TBODY') return;
 
-    // Inicia o intervalo de atualização de 1 em 1 minuto (60000 ms)
-    setInterval(startUpdateJob, 2 * 60 * 1000);
-    let updateCounter = 0
-    elements.airport().value = ''
-    elements.aircraft().value = ''
+                const aircraftCell = row.cells[2]; // terceira coluna (índice 2) = Aeronave
+                if (!aircraftCell) return;
 
-    // Adiciona o evento de clique em cada linha da tabela
-    document.addEventListener('DOMContentLoaded', function () {
-      const flightTable = document.getElementById('flightTable');
+                const aircraftCode = aircraftCell.textContent.trim();
+                const departureUTC = localTimeToUTC(row.cells[5].textContent.trim());
+                let date = row.cells[0].textContent.split('-').join('');
 
-      flightTable.addEventListener('click', function (event) {
-        const row = event.target.closest('tr');
+                if (aircraftCode) {
+                    const url = `https://pt.flightaware.com/live/flight/${aircraftCode}/history/${date}/${departureUTC}`;
+                    window.open(url, '_blank');
+                }
+            });
 
-        // Ignora o clique no cabeçalho
-        if (!row || row.parentNode.tagName !== 'TBODY') return;
-
-        const aircraftCell = row.cells[1]; // segunda coluna (índice 1) = Aeronave
-        if (!aircraftCell) return;
-
-        const aircraftCode = aircraftCell.textContent.trim()
-        const departureUTC = localTimeToUTC(row.cells[4].textContent.trim())
-        let date = row.cells[0].textContent.split('-').join('')
-
-        if (aircraftCode) {
-          const url = `https://pt.flightaware.com/live/flight/${aircraftCode}/history/${date}/${departureUTC}`;
-          window.open(url, '_blank');
-        }
-      });
-    });
-
-    function localTimeToUTC(horaStr) {
-      const match = horaStr.match(/^(\d{1,2}):(\d{2})\s*(-?\d{1,2})$/);
-      if (!match) {
-        console.error('Formato de hora inválido:', horaStr);
-        return null;
-      }
-
-      let [_, hora, minuto, offset] = match;
-      hora = parseInt(hora);
-      minuto = parseInt(minuto);
-      offset = parseInt(offset);
-
-      // Converte para UTC
-      let horaUTC = hora + offset * -1;
-
-      // Ajuste se passar de 24h ou for negativo
-      if (horaUTC >= 24) horaUTC -= 24;
-      if (horaUTC < 0) horaUTC += 24;
-
-      return `${horaUTC.toString().padStart(2, '0')}${minuto.toString().padStart(2, '0')}Z`;
-    }
-
-    function startUpdateJob() {
-      const airport = elements.airport().value.trim().toUpperCase();
-      let aircraft = elements.aircraft().value.trim().toUpperCase();
-
-      if (!airport && !aircraft) { return }
-      if (updateCounter++ >= 10) { location.reload() }
-
-      console.log('Atualizando dos dados: ' + updateCounter);
-      updateVoos();
-    }
-
-    function getActualDateTime() {
-      const agora = new Date();
-
-      const dia = String(agora.getDate()).padStart(2, '0');
-      const mes = String(agora.getMonth() + 1).padStart(2, '0');
-      const ano = agora.getFullYear();
-
-      const hora = String(agora.getHours()).padStart(2, '0');
-      const minuto = String(agora.getMinutes()).padStart(2, '0');
-
-      return `${dia}/${mes}/${ano} ${hora}:${minuto}`;
-    }
-
-    async function updateVoos() {
-      updateCounter++
-      elements.lastUpdate().textContent = "";
-
-      const airport = elements.airport().value.trim().toUpperCase();
-      let aircraft = elements.aircraft().value.trim().toUpperCase();
-
-      if (!airport && !aircraft) {
-        showError('Informe pelo menos um filtro de busca');
-        return;
-      }
-
-      showLoading(true);
-      clearResults();
-
-      try {
-        const result = await noPrefixSearch(airport, aircraft);
-        const dados = result.dados
-        aircraft = result.aircraft
-        showResults({ airport, aircraft, dados });
-      } catch (error) {
-        showError(error.message);
-      } finally {
-        showLoading(false);
-      }
-    }
-
-    // Função principal de busca
-    async function searchFlightsButton() {
-      elements.lastUpdate().textContent = "";
-
-      const airport = elements.airport().value.trim().toUpperCase();
-      let aircraft = elements.aircraft().value.trim().toUpperCase();
-
-      clearResults();
-
-      if (!airport && !aircraft) {
-        showError('Informe pelo menos um filtro de busca');
-        return;
-      }
-
-      updateCounter = 0
-      showLoading(true);
-
-      try {
-        const result = await noPrefixSearch(airport, aircraft);
-        const dados = result.dados
-        aircraft = result.aircraft
-        showResults({ airport, aircraft, dados });
-      } catch (error) {
-        showError(error.message);
-      } finally {
-        showLoading(false);
-      }
-    }
-
-    // Busca com tentativas automáticas para códigos de 3 letras
-    async function noPrefixSearch(airport, aircraft) {
-      aircraft = aircraft?.replace('-', '')
-
-      const dados = await makeApiRequest(airport, aircraft);
-      return { aircraft, dados }
-    }
-
-    // Faz a requisição para a API
-    async function makeApiRequest(airport, aircraft) {
-      const params = new URLSearchParams();
-      if (airport) params.append('airport', airport);
-      if (aircraft) params.append('aircraft', aircraft);
-
-      const url = `${API_BASE}?${params.toString()}`;
-      const response = await fetch(url);
-
-      if (!response.ok) {
-        throw new Error(`Erro ${response.status}: ${response.statusText}`);
-      }
-
-      const contentType = response.headers.get('content-type');
-      if (!contentType?.includes('application/json')) {
-        throw new Error('Resposta inválida do servidor');
-      }
-
-      const data = await response.json();
-
-      if (!Array.isArray(data.data)) {
-        throw new Error('Formato de resposta inesperado');
-      }
-
-      return data.data;
-    }
-
-    // Exibe os resultados na tabela
-    function showResults(objeto) {
-      const dados = objeto.dados
-      const airport = objeto.airport
-      const aircraft = objeto.aircraft
-
-      elements.resultsCount().textContent = `${dados.length} voo${dados.length !== 1 ? 's' : ''} encontrado${dados.length !== 1 ? 's' : ''}`;
-      elements.lastUpdate().textContent = `Atualizado em: ${getActualDateTime()}`
-
-      if (dados.length === 0) {
-        elements.emptyState().style.display = 'block';
-        return;
-      }
-
-      elements.emptyState().style.display = 'none';
-
-      const tbody = elements.flightData();
-
-      const table = [];
-      dados.forEach(voo => {
-        const aircraftId = voo.aircraftId ? voo.aircraftId : aircraft || '-';
-        const icon = aircraftId.length === 5 ? '🚁' : '✈️';
-        table.push(
-          `
-        <tr class="flight-row" title="Clique para abrir o rastreamento">
-          <td>${voo.date || '-'}</td>
-          <td>${aircraftId}</td>
-          <td>${voo.origin || airport}</td>
-          <td>${voo.destination || '-'}</td>
-          <td>${voo.departure || '-'}</td>
-          <td>${voo.arrival || '-'}</td>
-          <td>${voo.duration || '-'}</td>
-          <td>${icon}</td>
-        </tr>
-      `
-        );
-      });
-      tbody.innerHTML = table.join('');
-    }
-
-    // Mostra/esconde indicador de carregamento
-    function showLoading(show) {
-      elements.loading().style.display = show ? 'block' : 'none';
-      elements.searchBtn().disabled = show;
-    }
-
-    // Mostra mensagem de erro
-    function showError(mensagem) {
-      const container = elements.errorContainer();
-      container.innerHTML = `<div class="error-message">${mensagem}</div>`;
-      elements.results().style.display = 'block';
-      elements.emptyState().style.display = 'none';
-    }
-
-    // Limpa os resultados
-    function clearResults() {
-      elements.errorContainer().innerHTML = '';
-      elements.flightData().innerHTML = '';
-      elements.resultsCount().textContent = '';
-      elements.emptyState().style.display = 'none';
-    }
-
-    // Event listeners
-    document.addEventListener('DOMContentLoaded', () => {
-      // Enter nos campos de input
-      [elements.airport(), elements.aircraft()].forEach(input => {
-        input.addEventListener('keypress', (e) => {
-          if (e.key === 'Enter') searchFlightsButton();
+            // Event listener para o filtro de tipo
+            elements.aircraftType().addEventListener('change', applyFilters);
         });
-      });
 
-      // Auto-uppercase nos inputs
-      elements.airport().addEventListener('input', (e) => {
-        e.target.value = e.target.value.toUpperCase();
-      });
+        function localTimeToUTC(horaStr) {
+            const match = horaStr.match(/^(\d{1,2}):(\d{2})\s*(-?\d{1,2})$/);
+            if (!match) {
+                console.error('Formato de hora inválido:', horaStr);
+                return null;
+            }
 
-      elements.aircraft().addEventListener('input', (e) => {
-        e.target.value = e.target.value.toUpperCase();
-      });
-    });
-  </script>
+            let [_, hora, minuto, offset] = match;
+            hora = parseInt(hora);
+            minuto = parseInt(minuto);
+            offset = parseInt(offset);
+
+            // Converte para UTC
+            let horaUTC = hora + offset * -1;
+
+            // Ajuste se passar de 24h ou for negativo
+            if (horaUTC >= 24) horaUTC -= 24;
+            if (horaUTC < 0) horaUTC += 24;
+
+            return `${horaUTC.toString().padStart(2, '0')}${minuto.toString().padStart(2, '0')}Z`;
+        }
+
+        function startUpdateJob() {
+            const airport = elements.airport().value.trim().toUpperCase();
+            let aircraft = elements.aircraft().value.trim().toUpperCase();
+
+            if (!airport && !aircraft) { return; }
+            if (updateCounter++ >= 15) { location.reload(); }
+
+            console.log(getActualDateTime() + ': Atualizando dos dados: ' + updateCounter);
+            updateVoos();
+        }
+
+        function getActualDateTime() {
+            const agora = new Date();
+
+            const dia = String(agora.getDate()).padStart(2, '0');
+            const mes = String(agora.getMonth() + 1).padStart(2, '0');
+            const ano = agora.getFullYear();
+
+            const hora = String(agora.getHours()).padStart(2, '0');
+            const minuto = String(agora.getMinutes()).padStart(2, '0');
+
+            return `${dia}/${mes}/${ano} ${hora}:${minuto}`;
+        }
+
+        function determineAircraftType(aircraftId) {
+            // Helicópteros geralmente têm 5 caracteres (ex: PSCDU, PROHA)
+            // Aviões geralmente têm 6 caracteres (ex: PPXYZW, PTABCD)
+            if (!aircraftId || aircraftId === '-') return 'unknown';
+            return aircraftId.length === 5 ? 'helicopter' : 'airplane';
+        }
+
+        function applyFilters() {
+            const selectedType = elements.aircraftType().value;
+
+            if (selectedType === 'all') {
+                filteredFlightData = [...originalFlightData];
+            } else {
+                filteredFlightData = originalFlightData.filter(flight => {
+                    const aircraftType = determineAircraftType(flight.aircraftId);
+                    return aircraftType === selectedType;
+                });
+            }
+
+            updateDisplayResults();
+            updateFilterInfo();
+        }
+
+        function updateFilterInfo() {
+            const filterInfo = elements.filterInfo();
+            const selectedType = elements.aircraftType().value;
+
+            if (selectedType === 'all') {
+                filterInfo.style.display = 'none';
+            } else {
+                const typeLabel = selectedType === 'helicopter' ? '🚁 Helicópteros' : '✈️ Aviões';
+                filterInfo.textContent = `Filtro: ${typeLabel}`;
+                filterInfo.style.display = 'inline-block';
+            }
+        }
+
+        async function updateVoos() {
+            updateCounter++;
+            elements.lastUpdate().textContent = "";
+
+            const airport = elements.airport().value.trim().toUpperCase();
+            let aircraft = elements.aircraft().value.trim().toUpperCase();
+
+            if (!airport && !aircraft) {
+                showError('Informe pelo menos um filtro de busca');
+                return;
+            }
+
+            showLoading(true);
+            clearResults();
+
+            try {
+                const result = await noPrefixSearch(airport, aircraft);
+                const dados = result.dados;
+                aircraft = result.aircraft;
+                originalFlightData = dados;
+                applyFilters();
+                elements.lastUpdate().textContent = `Atualizado em: ${getActualDateTime()}`;
+            } catch (error) {
+                showError(error.message);
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // Função principal de busca
+        async function searchFlightsButton() {
+            elements.lastUpdate().textContent = "";
+
+            const airport = elements.airport().value.trim().toUpperCase();
+            let aircraft = elements.aircraft().value.trim().toUpperCase();
+
+            clearResults();
+
+            if (!airport && !aircraft) {
+                showError('Informe pelo menos um filtro de busca');
+                return;
+            }
+
+            updateCounter = 0;
+            showLoading(true);
+
+            try {
+                const result = await noPrefixSearch(airport, aircraft);
+                const dados = result.dados;
+                aircraft = result.aircraft;
+                originalFlightData = dados;
+                applyFilters();
+                elements.lastUpdate().textContent = `Atualizado em: ${getActualDateTime()}`;
+            } catch (error) {
+                showError(error.message);
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // Busca com tentativas automáticas para códigos de 3 letras
+        async function noPrefixSearch(airport, aircraft) {
+            aircraft = aircraft?.replace('-', '');
+
+            const dados = await makeApiRequest(airport, aircraft);
+            return { aircraft, dados };
+        }
+
+        // Faz a requisição para a API
+        async function makeApiRequest(airport, aircraft) {
+            const params = new URLSearchParams();
+            if (airport) params.append('airport', airport);
+            if (aircraft) params.append('aircraft', aircraft);
+
+            const url = `${API_BASE}?${params.toString()}`;
+            const response = await fetch(url);
+
+            if (!response.ok) {
+                throw new Error(`Erro ${response.status}: ${response.statusText}`);
+            }
+
+            const contentType = response.headers.get('content-type');
+            if (!contentType?.includes('application/json')) {
+                throw new Error('Resposta inválida do servidor');
+            }
+
+            const data = await response.json();
+
+            if (!Array.isArray(data.data)) {
+                throw new Error('Formato de resposta inesperado');
+            }
+
+            return data.data;
+        }
+
+        function updateDisplayResults() {
+            const airport = elements.airport().value.trim().toUpperCase();
+            const aircraft = elements.aircraft().value.trim().toUpperCase();
+
+            elements.resultsCount().textContent = `${filteredFlightData.length} voo${filteredFlightData.length !== 1 ? 's' : ''} encontrado${filteredFlightData.length !== 1 ? 's' : ''}`;
+
+            if (filteredFlightData.length === 0) {
+                elements.emptyState().style.display = 'block';
+                elements.flightData().innerHTML = '';
+                return;
+            }
+
+            elements.emptyState().style.display = 'none';
+
+            const tbody = elements.flightData();
+            const table = [];
+
+            filteredFlightData.forEach(voo => {
+                const aircraftId = voo.aircraftId ? voo.aircraftId : aircraft || '-';
+                const aircraftType = determineAircraftType(aircraftId);
+                const icon = aircraftType === 'helicopter' ? '🚁' : '✈️';
+                const typeLabel = aircraftType === 'helicopter' ? 'HEL' : 'AVN';
+                const typeClass = aircraftType === 'helicopter' ? 'helicopter' : 'airplane';
+
+                table.push(`
+          <tr class="flight-row" title="Clique para abrir o rastreamento">
+            <td>${voo.date || '-'}</td>
+            <td>
+              <span class="aircraft-type ${typeClass}">
+                ${icon} ${typeLabel}
+              </span>
+            </td>
+            <td><strong>${aircraftId}</strong></td>
+            <td>${voo.origin || airport}</td>
+            <td>${voo.destination || '-'}</td>
+            <td>${voo.departure || '-'}</td>
+            <td>${voo.arrival || '-'}</td>
+            <td>${voo.duration || '-'}</td>
+            <td>🗺️📍</td>
+          </tr>
+        `);
+            });
+
+            tbody.innerHTML = table.join('');
+        }
+
+        // Mostra/esconde indicador de carregamento
+        function showLoading(show) {
+            elements.loading().style.display = show ? 'block' : 'none';
+            elements.searchBtn().disabled = show;
+        }
+
+        // Mostra mensagem de erro
+        function showError(mensagem) {
+            const container = elements.errorContainer();
+            container.innerHTML = `<div class="error-message">${mensagem}</div>`;
+            elements.results().style.display = 'block';
+            elements.emptyState().style.display = 'none';
+        }
+
+        // Limpa os resultados
+        function clearResults() {
+            elements.errorContainer().innerHTML = '';
+            elements.flightData().innerHTML = '';
+            elements.resultsCount().textContent = '';
+            elements.emptyState().style.display = 'none';
+            elements.filterInfo().style.display = 'none';
+            originalFlightData = [];
+            filteredFlightData = [];
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            // Enter nos campos de input
+            [elements.airport(), elements.aircraft()].forEach(input => {
+                input.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') searchFlightsButton();
+                });
+            });
+
+            // Auto-uppercase nos inputs
+            elements.airport().addEventListener('input', (e) => {
+                e.target.value = e.target.value.toUpperCase();
+            });
+
+            elements.aircraft().addEventListener('input', (e) => {
+                e.target.value = e.target.value.toUpperCase();
+            });
+        });
+    </script>
 </body>
 
 </html>
