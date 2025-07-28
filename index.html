@@ -328,8 +328,8 @@
                     <label for="aircraftType">Tipo de Aeronave</label>
                     <select id="aircraftType">
                         <option value="all">Todos</option>
-                        <option value="helicopter_br">🇧🇷&nbsp;&nbsp;Helicópteros</option>
-                        <option value="helicopter">🚁 Helicópteros</option>
+                        <option value="helicopter_br">🚁 Helicópteros BR</option>
+                        <option value="helicopter">🚡 Helicópteros</option>
                         <option value="airplane">✈️ Aviões</option>
                     </select>
                 </div>
@@ -636,16 +636,16 @@
                 let typeLabel;
                 switch (selectedType) {
                     case 'helicopter_br':
-                        typeLabel = '🇧🇷 Helicópteros BR';
+                        typeLabel = '🚁 Helicópteros BR';
                         break;
                     case 'helicopter':
-                        typeLabel = '🚁 Helicópteros';
+                        typeLabel = '🚡 Helicópteros';
                         break;
                     case 'airplane':
                         typeLabel = '✈️ Aviões';
                         break;
                 }
-                filterInfo.textContent = `Filtro: ${typeLabel}`;
+                filterInfo.innerHTML = `Filtro: ${typeLabel}`;
                 filterInfo.style.display = 'inline-block';
             }
         }
@@ -776,12 +776,12 @@
 
                 switch (aircraftType) {
                     case 'helicopter_br':
-                        icon = '🇧🇷';
+                        icon = '🚁';
                         typeLabel = 'HEL';
                         typeClass = 'helicopter_br';
                         break;
                     case 'helicopter':
-                        icon = '🚁';
+                        icon = '🚡';
                         typeLabel = 'HEL';
                         typeClass = 'helicopter';
                         break;
