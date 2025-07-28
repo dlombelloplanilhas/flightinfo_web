@@ -365,6 +365,12 @@
       searchBtn: () => document.querySelector('.search-btn')
     };
 
+    // Inicia o intervalo de atualização de 1 em 1 minuto (60000 ms)
+    setInterval(startUpdateJob, 2 * 60 * 1000);
+    let updateCounter = 0
+    elements.airport().value = ''
+    elements.aircraft().value = ''
+
     // Adiciona o evento de clique em cada linha da tabela
     document.addEventListener('DOMContentLoaded', function () {
       const flightTable = document.getElementById('flightTable');
@@ -411,23 +417,14 @@
       return `${horaUTC.toString().padStart(2, '0')}${minuto.toString().padStart(2, '0')}Z`;
     }
 
-    // Inicia o intervalo de atualização de 1 em 1 minuto (60000 ms)
-    setInterval(startUpdateJob, 2 * 60 * 1000);
-    let updateCounter = 0
-
     function startUpdateJob() {
       const airport = elements.airport().value.trim().toUpperCase();
       let aircraft = elements.aircraft().value.trim().toUpperCase();
 
-      if (!airport && !aircraft) {
-        return;
-      }
+      if (!airport && !aircraft) { return }
+      if (updateCounter++ >= 10) { location.reload() }
 
-      if (updateCounter++ >= 10) {
-        location.reload();
-      }
-
-      console.log('Atualizando dos dados...');
+      console.log('Atualizando dos dados: ' + updateCounter);
       updateVoos();
     }
 
