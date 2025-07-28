@@ -235,6 +235,11 @@
             color: #1976d2;
         }
 
+        .aircraft-type.helicopter_br {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+
         .aircraft-type.airplane {
             background: #f3e5f5;
             color: #7b1fa2;
@@ -323,6 +328,7 @@
                     <label for="aircraftType">Tipo de Aeronave</label>
                     <select id="aircraftType">
                         <option value="all">Todos</option>
+                        <option value="helicopter_br">🇧🇷&nbsp;&nbsp;Helicópteros</option>
                         <option value="helicopter">🚁 Helicópteros</option>
                         <option value="airplane">✈️ Aviões</option>
                     </select>
@@ -381,6 +387,102 @@
     </div>
 
     <script>
+        const aircraftsBr = [
+            { "prefixo": "PR-AIE", "empresa": "Líder" },
+            { "prefixo": "PR-AIF", "empresa": "Líder" },
+            { "prefixo": "PR-AIG", "empresa": "Líder" },
+            { "prefixo": "PR-BGB", "empresa": "Omni" },
+            { "prefixo": "PR-JBK", "empresa": "Omni" },
+            { "prefixo": "PR-BGT", "empresa": "CHC" },
+            { "prefixo": "PR-BGU", "empresa": "CHC" },
+            { "prefixo": "PR-BGX", "empresa": "Omni" },
+            { "prefixo": "PR-BGY", "empresa": "CHC" },
+            { "prefixo": "PR-BGZ", "empresa": "CHC" },
+            { "prefixo": "PR-CGE", "empresa": "CHC" },
+            { "prefixo": "PR-CGF", "empresa": "CHC" },
+            { "prefixo": "PR-CGK", "empresa": "CHC" },
+            { "prefixo": "PR-CGN", "empresa": "Omni" },
+            { "prefixo": "PR-CGO", "empresa": "Omni" },
+            { "prefixo": "PR-CGP", "empresa": "CHC" },
+            { "prefixo": "PR-CGS", "empresa": "CHC" },
+            { "prefixo": "PR-CGT", "empresa": "CHC" },
+            { "prefixo": "PR-CGW", "empresa": "CHC" },
+            { "prefixo": "PR-CHT", "empresa": "Omni" },
+            { "prefixo": "PR-CPV", "empresa": "CHC" },
+            { "prefixo": "PR-EPV", "empresa": "Líder" },
+            { "prefixo": "PR-JAA", "empresa": "Líder" },
+            { "prefixo": "PR-JAR", "empresa": "Líder" },
+            { "prefixo": "PR-JAW", "empresa": "Líder" },
+            { "prefixo": "PR-JBE", "empresa": "Líder" },
+            { "prefixo": "PR-JBI", "empresa": "Líder" },
+            { "prefixo": "PR-JBO", "empresa": "Líder" },
+            { "prefixo": "PR-JBQ", "empresa": "Líder" },
+            { "prefixo": "PR-JHC", "empresa": "Líder" },
+            { "prefixo": "PR-JHD", "empresa": "Líder" },
+            { "prefixo": "PR-JHE", "empresa": "Líder" },
+            { "prefixo": "PR-JHG", "empresa": "Líder" },
+            { "prefixo": "PR-JKC", "empresa": "Líder" },
+            { "prefixo": "PR-JKE", "empresa": "Líder" },
+            { "prefixo": "PR-JKJ", "empresa": "Líder" },
+            { "prefixo": "PR-JKK", "empresa": "Líder" },
+            { "prefixo": "PR-JKM", "empresa": "Líder" },
+            { "prefixo": "PR-CHQ", "empresa": "Omni" },
+            { "prefixo": "PR-LCR", "empresa": "Omni" },
+            { "prefixo": "PR-OHA", "empresa": "Omni" },
+            { "prefixo": "PR-OHB", "empresa": "Omni" },
+            { "prefixo": "PR-OHE", "empresa": "Omni" },
+            { "prefixo": "PR-OHF", "empresa": "Omni" },
+            { "prefixo": "PR-OHG", "empresa": "Omni" },
+            { "prefixo": "PR-OHJ", "empresa": "Omni" },
+            { "prefixo": "PR-OHK", "empresa": "Omni" },
+            { "prefixo": "PR-OHL", "empresa": "Omni" },
+            { "prefixo": "PR-OHN", "empresa": "Omni" },
+            { "prefixo": "PR-OHP", "empresa": "Omni" },
+            { "prefixo": "PR-OHQ", "empresa": "Omni" },
+            { "prefixo": "PR-OHR", "empresa": "Omni" },
+            { "prefixo": "PR-OHU", "empresa": "Omni" },
+            { "prefixo": "PR-OHV", "empresa": "Omni" },
+            { "prefixo": "PR-OHX", "empresa": "Omni" },
+            { "prefixo": "PR-OHY", "empresa": "Omni" },
+            { "prefixo": "PR-OHZ", "empresa": "Omni" },
+            { "prefixo": "PR-OOA", "empresa": "Omni" },
+            { "prefixo": "PR-OOC", "empresa": "Omni" },
+            { "prefixo": "PR-OOL", "empresa": "Omni" },
+            { "prefixo": "PR-OON", "empresa": "Omni" },
+            { "prefixo": "PR-OOP", "empresa": "Omni" },
+            { "prefixo": "PR-OOR", "empresa": "Omni" },
+            { "prefixo": "PR-OOS", "empresa": "Omni" },
+            { "prefixo": "PR-OOT", "empresa": "Omni" },
+            { "prefixo": "PR-OOU", "empresa": "Omni" },
+            { "prefixo": "PR-OOX", "empresa": "Omni" },
+            { "prefixo": "PR-OOY", "empresa": "Omni" },
+            { "prefixo": "PR-OTH", "empresa": "Omni" },
+            { "prefixo": "PR-OTI", "empresa": "Omni" },
+            { "prefixo": "PR-OTN", "empresa": "Omni" },
+            { "prefixo": "PR-OTP", "empresa": "Omni" },
+            { "prefixo": "PR-OTQ", "empresa": "Omni" },
+            { "prefixo": "PR-OTS", "empresa": "Omni" },
+            { "prefixo": "PR-OTU", "empresa": "Omni" },
+            { "prefixo": "PR-OTW", "empresa": "Omni" },
+            { "prefixo": "PR-OTX", "empresa": "Omni" },
+            { "prefixo": "PR-OTY", "empresa": "Omni" },
+            { "prefixo": "PS-BTA", "empresa": "Bristow" },
+            { "prefixo": "PS-BTB", "empresa": "Bristow" },
+            { "prefixo": "PS-BTC", "empresa": "Bristow" },
+            { "prefixo": "PS-BTF", "empresa": "Bristow" },
+            { "prefixo": "PS-BTJ", "empresa": "Bristow" },
+            { "prefixo": "PS-BTK", "empresa": "Bristow" },
+            { "prefixo": "PS-BTL", "empresa": "Bristow" },
+            { "prefixo": "PR-MLL", "empresa": "Bristow" },
+            { "prefixo": "PS-BTW", "empresa": "Bristow" },
+            { "prefixo": "PS-CDR", "empresa": "Costa do Sol" },
+            { "prefixo": "PS-CDT", "empresa": "Costa do Sol" },
+            { "prefixo": "PS-CDU", "empresa": "Costa do Sol" },
+            { "prefixo": "PS-CDV", "empresa": "Costa do Sol" },
+            { "prefixo": "PT-GAD", "empresa": "Líder" },
+            { "prefixo": "PT-GAX", "empresa": "Líder" }
+        ]
+
         // Configurações
         const API_BASE = 'https://flightinfo.onrender.com/flights';
         // const API_BASE = 'https://3000-dlombellopla-flightinfo-lszderjlpav.ws-us120.gitpod.io/flights';
@@ -424,7 +526,7 @@
                 const aircraftCell = row.cells[2]; // terceira coluna (índice 2) = Aeronave
                 if (!aircraftCell) return;
 
-                const aircraftCode = aircraftCell.textContent.trim();
+                const aircraftCode = aircraftCell.textContent.trim().replace('-', '');
                 const departureUTC = localTimeToUTC(row.cells[5].textContent.trim());
                 let date = row.cells[0].textContent.split('-').join('');
 
@@ -484,10 +586,27 @@
             return `${dia}/${mes}/${ano} ${hora}:${minuto}`;
         }
 
+        // Função para verificar se uma aeronave é brasileira
+        function isBrazilianHelicopter(aircraftId) {
+            if (!aircraftId || aircraftId === '-') return false;
+
+            // Converte o aircraftId para o formato com hífen se não tiver
+            const formattedId = aircraftId.length === 5 ?
+                aircraftId.slice(0, 2) + '-' + aircraftId.slice(2) :
+                aircraftId;
+
+            return aircraftsBr.some(aircraft => aircraft.prefixo === formattedId);
+        }
+
         function determineAircraftType(aircraftId) {
-            // Helicópteros geralmente têm 5 caracteres (ex: PSCDU, PROHA)
-            // Aviões geralmente têm 6 caracteres (ex: PPXYZW, PTABCD)
             if (!aircraftId || aircraftId === '-') return 'unknown';
+
+            // Primeiro verifica se é um helicóptero brasileiro
+            if (isBrazilianHelicopter(aircraftId)) {
+                return 'helicopter_br';
+            }
+
+            // Senão, usa a lógica original
             return aircraftId.length === 5 ? 'helicopter' : 'airplane';
         }
 
@@ -514,7 +633,18 @@
             if (selectedType === 'all') {
                 filterInfo.style.display = 'none';
             } else {
-                const typeLabel = selectedType === 'helicopter' ? '🚁 Helicópteros' : '✈️ Aviões';
+                let typeLabel;
+                switch (selectedType) {
+                    case 'helicopter_br':
+                        typeLabel = '🇧🇷 Helicópteros BR';
+                        break;
+                    case 'helicopter':
+                        typeLabel = '🚁 Helicópteros';
+                        break;
+                    case 'airplane':
+                        typeLabel = '✈️ Aviões';
+                        break;
+                }
                 filterInfo.textContent = `Filtro: ${typeLabel}`;
                 filterInfo.style.display = 'inline-block';
             }
@@ -641,9 +771,30 @@
 
                 const aircraftId = voo.aircraftId ? voo.aircraftId : aircraft || '-';
                 const aircraftType = determineAircraftType(aircraftId);
-                const icon = aircraftType === 'helicopter' ? '🚁' : '✈️';
-                const typeLabel = aircraftType === 'helicopter' ? 'HEL' : 'AVN';
-                const typeClass = aircraftType === 'helicopter' ? 'helicopter' : 'airplane';
+
+                let icon, typeLabel, typeClass;
+
+                switch (aircraftType) {
+                    case 'helicopter_br':
+                        icon = '🇧🇷';
+                        typeLabel = 'HEL';
+                        typeClass = 'helicopter_br';
+                        break;
+                    case 'helicopter':
+                        icon = '🚁';
+                        typeLabel = 'HEL';
+                        typeClass = 'helicopter';
+                        break;
+                    case 'airplane':
+                        icon = '✈️';
+                        typeLabel = 'AVN';
+                        typeClass = 'airplane';
+                        break;
+                    default:
+                        icon = '❓';
+                        typeLabel = 'N/A';
+                        typeClass = 'unknown';
+                }
 
                 table.push(`
           <tr class="flight-row" title="Clique para abrir o rastreamento">
