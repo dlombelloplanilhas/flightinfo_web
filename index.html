@@ -34,7 +34,7 @@
 
         .header h1 {
             font-size: 2.5rem;
-            font-weight: 300;
+            font-weight: 700;
             margin-bottom: 10px;
             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
         }
@@ -303,7 +303,7 @@
 <body>
     <div class="container">
         <header class="header">
-            <h1>🚁 FlightInfo BR</h1>
+            <h1>🚁 <b>FlightInfo BR</b></h1>
             <p>Consulta de voos offshore em tempo real</p>
         </header>
 
@@ -406,7 +406,7 @@
         };
 
         // Inicia o intervalo de atualização de 3 em 3 minutos
-        setInterval(startUpdateJob, 3 * 60 * 1000);
+        setInterval(startUpdateJob, 5 * 60 * 1000);
         let updateCounter = 0;
         elements.airport().value = '';
         elements.aircraft().value = '';
@@ -465,7 +465,7 @@
             let aircraft = elements.aircraft().value.trim().toUpperCase();
 
             if (!airport && !aircraft) { return; }
-            if (updateCounter++ >= 15) { location.reload(); }
+            if (updateCounter >= 10) { location.reload(); }
 
             console.log(getActualDateTime() + ': Atualizando dos dados: ' + updateCounter);
             updateVoos();
@@ -633,6 +633,12 @@
             const table = [];
 
             filteredFlightData.forEach(voo => {
+
+                function formatarTextoPrefixo(texto) {
+                    if (texto.length <= 2) return texto; // se tiver 2 ou menos, não precisa alterar
+                    return texto.slice(0, 2) + '-' + texto.slice(2);
+                }
+
                 const aircraftId = voo.aircraftId ? voo.aircraftId : aircraft || '-';
                 const aircraftType = determineAircraftType(aircraftId);
                 const icon = aircraftType === 'helicopter' ? '🚁' : '✈️';
@@ -647,7 +653,7 @@
                 ${icon} ${typeLabel}
               </span>
             </td>
-            <td><strong>${aircraftId}</strong></td>
+            <td><strong>${aircraftId.length === 5 ? formatarTextoPrefixo(aircraftId) : aircraftId}</strong></td>
             <td>${voo.origin || airport}</td>
             <td>${voo.destination || '-'}</td>
             <td>${voo.departure || '-'}</td>
